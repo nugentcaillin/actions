@@ -1,0 +1,36 @@
+name: 'Cloudflared ssh'
+description: 'connect via ssh using cloudflared'
+inputs:
+  id:
+    description: 'cloudflared access client id'
+  secret:
+    description: 'cloudflared access client secret'
+  key:
+    description: 'the private key for ssh' 
+  user:
+    description: 'the ssh user'
+  host:
+    description: 'the ssh host'
+  script:
+    description: 'the script to execute on remote machine'
+runs:
+  using: "composite"
+  steps:
+    - name: Pull Cloudflared image
+      shell: bash
+      run: docker pull cloudflare/cloudflared:latest
+    - name: set up key
+      shell: bash
+      run: |
+        echo "${{inputs.key}}" > deploy_key
+        chmod 600 deploy_key
+    - name: run script
+      shell: bash
+      run: |
+        ssh -i deploy_key -v -o "StrictHostKeyChecking=no" \
+        -o "ProxyCommand=docker run -i cloudflare/cloudflared:latest access \
+        ssh --hostname ${{inputs.host}} --service-token-id ${{inputs.id}} \
+        --service-token-secret ${{inputs.secret}}" \
+        ${{inputs.user}}@${{inputs.host}} /bin/bash << 'EOF'
+        ${{inputs.script}}
+        EOF
