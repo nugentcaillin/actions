@@ -13,7 +13,7 @@ runs:
       run: docker run --volume ${GITHUB_WORKSPACE}:repo caillinnugent/doxygen -g repo/Doxyfile
     - name: publish docs as build artefact
       uses: actions/upload-artifact@v7
-        with:
-          name: 'docs'
+      with:
+        name: 'docs'
         path: 'html'
 
