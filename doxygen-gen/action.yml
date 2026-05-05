@@ -1,0 +1,19 @@
+name: 'Doxygen gen'
+description: 'Generate doxygen docs and save them as build artefact'
+runs:
+  using: "composite"
+  steps:
+    - name: checkout repository
+      uses: actions/checkout@v6
+    - name: pull doxygen image
+      shell: bash
+      run: docker pull caillinnugent/doxygen:latest
+    - name: generate docs
+      shell: bash
+      run: docker run --volume ${GITHUB_WORKSPACE}:repo caillinnugent/doxygen -g repo/Doxyfile
+    - name: publish docs as build artefact
+      uses: actions/upload-artifact@v7
+        with:
+          name: 'docs'
+        path: 'html'
+
