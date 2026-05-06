@@ -22,5 +22,5 @@ runs:
         path: 'html'
     - name: set output
       shell: bash
-      run: echo "artifact-id=${{upload.artifact-id}}" >> "$GITHUB_OUTPUT"
+      run: echo "artifact-id=${{ steps.upload.outputs.artifact-id }}" >> "$GITHUB_OUTPUT"
 
