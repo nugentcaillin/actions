@@ -1,5 +1,8 @@
 name: 'Doxygen gen'
 description: 'Generate doxygen docs and save them as build artefact'
+outputs:
+  artifact-id:
+    description: the ID of uploaded artifact
 runs:
   using: "composite"
   steps:
@@ -12,8 +15,12 @@ runs:
       shell: bash
       run: docker run --volume ${GITHUB_WORKSPACE}:/repo -w /repo caillinnugent/doxygen
     - name: publish docs as build artefact
+      id: upload
       uses: actions/upload-artifact@v7
       with:
         name: 'docs'
         path: 'html'
+    - name: set output
+      shell: bash
+      run: echo "artifact-id=${{upload.artifact-id}}" >> "$GITHUB_OUTPUT"
 
