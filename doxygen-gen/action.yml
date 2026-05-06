@@ -3,6 +3,7 @@ description: 'Generate doxygen docs and save them as build artefact'
 outputs:
   artifact-id:
     description: the ID of uploaded artifact
+    value: ${{ steps.set.outputs.artifact-id }}
 runs:
   using: "composite"
   steps:
@@ -22,5 +23,6 @@ runs:
         path: 'html'
     - name: set output
       shell: bash
+      id: set
       run: echo "artifact-id=${{ steps.upload.outputs.artifact-id }}" >> "$GITHUB_OUTPUT"
 
